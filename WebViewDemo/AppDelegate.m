@@ -7,6 +7,12 @@
 //
 
 #import "AppDelegate.h"
+#import "WebViewViewController.h"
+#import "DBManager.h"
+#import "BaseExecute+Table.h"
+#import "WebViewNavViewController.h"
+#import "Product.h"
+#import "RNCachingURLProtocol.h"
 
 @implementation AppDelegate
 
@@ -18,8 +24,36 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+     [NSURLProtocol registerClass:[RNCachingURLProtocol class]];
+    // Create the master list for the main view controller.
+	NSArray *listContent = [[NSArray alloc] initWithObjects:
+                            [Product productWithType:@"Device" name:@"iPhone" url:@"http://www.ftms.com.cn/information/388.html"],
+                            [Product productWithType:@"Device" name:@"iPod" url:@"http://59.151.109.230/eventftms/wangzhuan86/mobile/apply.html"],
+                            [Product productWithType:@"Device" name:@"iPod touch" url:@"http://www.baidu.com"],
+                            [Product productWithType:@"Desktop" name:@"iMac" url:@"http://www.google.com.hk"],
+                            [Product productWithType:@"Desktop" name:@"Mac Pro" url:@"http://www.so.com"],
+                            [Product productWithType:@"Portable" name:@"iBook" url:@"http://wanke.etao.com/user/signin.php"],
+                            [Product productWithType:@"Portable" name:@"MacBook" url:@"http://www.meile.com"],
+                            [Product productWithType:@"Portable" name:@"MacBook Pro" url:@"http://www.36kr.com"],
+                            [Product productWithType:@"Portable" name:@"PowerBook" url:@"http://www.cocoachina.com"], nil];
+    
+    [[DBManager shareIsrance] init];
+    BaseExecute *execute = [[BaseExecute alloc] init];
+    [execute creatTable];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
+
+    
+    
+    WebViewNavViewController *webNav = [[WebViewNavViewController alloc] init];
+    webNav.listContent = listContent;
+    // Add create and configure the navigation controller.
+	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:webNav];
+    self.window.rootViewController = navigationController;
+    [webNav release];
+    [navigationController release];
+    
+    
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
